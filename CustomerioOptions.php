@@ -77,7 +77,17 @@ final class CustomerioOptions implements MessageOptionsInterface
 
     public function customData($customData): static
     {
-        $this->options['custom_data'] = $customData;
+        if ($customData && count($customData)) {
+            $this->options['custom_data'] = $customData;
+
+            foreach ($this->options['custom_data'] as $key => $value) {
+                if (is_int($value)) {
+                    $this->options['custom_data'][$key] = (string)$value;
+                }
+            }
+        } else {
+            $this->options['custom_data'] = null;
+        }
 
         return $this;
     }
