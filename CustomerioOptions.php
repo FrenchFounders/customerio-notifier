@@ -78,13 +78,7 @@ final class CustomerioOptions implements MessageOptionsInterface
     public function customData($customData): static
     {
         if ($customData && count($customData)) {
-            $this->options['custom_data'] = $customData;
-
-            foreach ($this->options['custom_data'] as $key => $value) {
-                if (is_int($value)) {
-                    $this->options['custom_data'][$key] = (string)$value;
-                }
-            }
+            $this->options['custom_data'] = $this->cleanJsonValues($customData);
         } else {
             $this->options['custom_data'] = null;
         }
@@ -159,5 +153,21 @@ final class CustomerioOptions implements MessageOptionsInterface
         unset($options['recipient_id']);
 
         return $options;
+    }
+
+    /**
+     * Specific for CustomerIO, they can't parse JSON containing not string values
+     */
+    private function cleanJsonValues($data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->cleanJsonValues($data);
+            } elseif (!is_string($value)) {
+                $data[$key] = (string)$value;
+            }
+        }
+
+        return $data;
     }
 }
