@@ -162,7 +162,7 @@ final class CustomerioOptions implements MessageOptionsInterface
     {
         foreach ($data as $key => $value) {
             if (is_array($value)) {
-                $data[$key] = $this->cleanJsonValues($data);
+                $data[$key] = $this->cleanJsonValues($value);
             } elseif (!is_string($value)) {
                 $data[$key] = (string)$value;
             }
